@@ -1,0 +1,46 @@
+const HomeConfig = [
+  {
+    type: "text",
+    name: "Name",
+    placeholder: "Name",
+    ariaLabel: "Name",
+    defaultValue: "",
+    autofill: "",
+    prefix: { display: false, children: "" },
+    suffix: { display: false, children: "" },
+    disabled: false,
+    required: false,
+    pattern: "[a-zA-Z]+",
+    min: undefined,
+    max: undefined,
+    minLength: undefined,
+    maxLength: undefined,
+    errorCases: {},
+    layout: {
+      width: "col-4",
+    },
+  },
+  {
+    type: "tel",
+    name: "Tel",
+    placeholder: "Phone No.",
+    ariaLabel: "Phone No.",
+    defaultValue: "",
+    autofill: "",
+    prefix: { display: true, children: "+91" },
+    suffix: { display: false, children: "" },
+    disabled: false,
+    required: false,
+    pattern: "^[0-9]+$",
+    min: undefined,
+    max: undefined,
+    minLength: 10,
+    maxLength: 10,
+    errorCases: {},
+    layout: {
+      width: "col-4",
+    },
+  },
+];
+
+export default HomeConfig;
