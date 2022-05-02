@@ -14,6 +14,7 @@ import "./index.css";
  * @param {object} suffix={ display: false, children: "" } - Whether to show a suffix element or not.
  * @param {boolean} disabled=false - Whether to disable the input or not.
  * @param {boolean} required=false -  Whether to make the input required or not.
+ * @param {bookean} spellcheck=false - Whether to enable spellcheck or not.
  * @param {number} min=undefined - The minimum value of the input.
  * @param {number} max=undefined - The minimum value of the input.
  * @param {number} minLength=undefined - The minimum length of the input.
@@ -37,6 +38,7 @@ const Field = (props) => {
     max = undefined,
     minLength = undefined,
     maxLength = undefined,
+    spellcheck = false,
     errorCases = {},
     prefix = { display: false, text: "" },
     suffix = { display: false, text: "" },
@@ -46,25 +48,39 @@ const Field = (props) => {
 
   const pointer = useRef();
 
-  const validationHandler = () => {
-    // const inputValue = pointer.current.value;
-    // const errorMessage = errorCases[inputValue];
-    // if (errorMessage) {
-    //   pointer.current.setCustomValidity(errorMessage);
-    // } else {
-    //   pointer.current.setCustomValidity("");
-    // }
+  const toggleMessages = (remove, add) => {
+    pointer.current.classList.remove(remove);
+    pointer.current.classList.add(add);
+  };
+
+  const validationHandler = (e) => {
+    e.nativeEvent.target.validity.valid
+      ? toggleMessages("is-invalid", "is-valid")
+      : ((pointer.current.nextElementSibling.innerText = errorMessage(
+          e.nativeEvent.target.validity
+        )),
+        toggleMessages("is-valid", "is-invalid"));
+  };
+
+  const errorMessage = (validityCases) => {
+    const cases = {};
+    for (let key in validityCases) {
+      cases[key] = validityCases[key];
+    }
+    return errorCases[Object.keys(cases).find((key) => cases[key])];
   };
 
   return (
     <>
-      <div className={`input-group-addon my-3 ${layout.width}`}>
+      <div
+        className={`input-group-addon my-3 align-content-around align-self-start ${layout.width}`}
+      >
         {prefix.display ? (
           <span className="input-group-text">{prefix.children}</span>
         ) : null}
         <input
           ref={pointer}
-          className="form-control"
+          className={`form-control ${layout.children.textDecoration}`}
           type={type}
           name={name}
           placeholder={placeholder}
@@ -78,13 +94,14 @@ const Field = (props) => {
           max={max}
           minLength={minLength}
           maxLength={maxLength}
+          spellCheck={spellcheck}
           onBlur={validationHandler}
         />
         {suffix.display ? (
           <span className="input-group-text">{suffix.children}</span>
         ) : null}
-        <div className="valid-feedback">Looks good!</div>
-        <div className="invalid-feedback">Please choose a username.</div>
+        <div className="invalid-feedback">{errorCases.defaultInvalid}</div>
+        <div className="valid-feedback">{errorCases.defaultValid}</div>
       </div>
     </>
   );
